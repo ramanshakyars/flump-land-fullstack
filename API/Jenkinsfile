@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "flumpland-app"
+        CONTAINER_NAME = "flumpland-app-container"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                sh 'chmod +x mvnw'
+                sh './mvnw clean package -DskipTests'
+            }
+        }
+
+        stage('Verify Build') {
+            steps {
+                sh 'ls -lh target'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ${IMAGE_NAME}:latest .'
+            }
+        }
+
+        stage('Stop Old Container') {
+            steps {
+                sh '''
+                    docker rm -f ${CONTAINER_NAME} || true
+                '''
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh '''
+                    docker run -d \
+                    --name ${CONTAINER_NAME} \
+                    -p 8081:8080 \
+                    ${IMAGE_NAME}:latest
+                '''
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                sh 'sleep 20'
+                sh 'docker ps'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Application deployed successfully.'
+        }
+
+        failure {
+            echo 'Deployment failed.'
+        }
+    }
+}

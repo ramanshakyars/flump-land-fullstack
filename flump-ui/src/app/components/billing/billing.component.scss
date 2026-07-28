@@ -1,0 +1,41 @@
+/* Style for tables in the dialog */
+mat-dialog-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+  }
+  
+  mat-dialog-content th, 
+  mat-dialog-content td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  mat-dialog-content th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  mat-dialog-content tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  mat-dialog-content tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  mat-dialog-content th, 
+  mat-dialog-content td {
+    text-align: left;
+  }
+  
+  mat-dialog-content h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+  
+  mat-dialog-content p {
+    margin: 5px 0;
+  }

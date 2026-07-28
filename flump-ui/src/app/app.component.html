@@ -1,0 +1,32 @@
+<div class="wrapper">
+  <nav class="navbar">
+    <div class="brand">
+      <i class="fas fa-bars" (click)="toggleSidebar()"></i>
+      <span class="title">Flump Land Play Zone</span>
+    </div>
+    <div class="nav-icons">
+      <i class="fas fa-bell"></i>
+      <i class="fas fa-user-circle"></i>
+    </div>
+  </nav>
+
+  <div class="main-layout">
+    <div class="sidebar" [class.collapsed]="isCollapsed">     
+      <ul class="menu">
+        <li *ngFor="let item of menuItems">
+          <a [routerLink]="item.path" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{ exact: true }">
+            <i [class]="item.icon"></i>
+            <span *ngIf="!isCollapsed">{{ item.name }}</span>
+          </a>
+        </li>
+      </ul>
+      
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+

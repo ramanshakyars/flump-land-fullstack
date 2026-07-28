@@ -1,0 +1,24 @@
+
+body {
+    position: relative;
+}
+
+tr.example-detail-row {
+    height: 0;
+}
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.example-element-detail {
+    overflow: hidden;
+}
+
+mat-icon {
+    cursor: pointer;
+}
+.card{
+    padding: 24px;
+}
+

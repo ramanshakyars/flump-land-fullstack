@@ -1,0 +1,129 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center m-3">Items</h2>
+        </div>
+
+        <!-- Activities Multi-select -->
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Activities</mat-label>
+                <mat-select multiple [formControl]="activitiesControl"
+                    (selectionChange)="onActivityChange($event.value)">
+                    <mat-option *ngFor="let activity of activityItemsList" [value]="activity">
+                        {{ activity.activityName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Inventory Multi-select -->
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Inventory Items</mat-label>
+                <mat-select multiple (selectionChange)="onInventoryChange($event.value)">
+                    <mat-option *ngFor="let inventory of inventoryItemsList" [value]="inventory"
+                        [disabled]="inventory.totalQuantity <= 0">
+                        {{ inventory.name }} [Remaining: {{inventory.totalQuantity}}]
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <!-- Display Selected Activities -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <div>Selected Activities</div>
+            <ul>
+                <li *ngFor="let activity of activitiesControl.value">
+                    {{ activity.activityName }}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Display Selected Inventory in a Table -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <div>Selected Inventory</div>
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>Inventory Name</th>
+                        <th>Quantity</th>
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of inventoryControl.value; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <input type="number" [(ngModel)]="item.quantity" (change)="updateQuantity(i, $event)"
+                                min="1" class="form-control" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-6 text-center mb-3">
+            <button mat-raised-button (click)="closeDialog()">Cancel</button>
+        </div>
+        <div class="col-6 text-center mb-3 ">
+            <button mat-raised-button (click)="saveItems()">Save</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" *ngIf="oldActivities.length > 0">
+            <div>Old Activities</div>
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>Activity Name</th>
+                        <!-- <th>Quantity</th> -->
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of oldActivities; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ data.activityName}}</td>
+                        <!-- <td>
+                            <input type="number" min="1" class="form-control" readonly />
+                        </td> -->
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-12" *ngIf="oldInventory.length > 0">
+            <div>Old Inventory</div>
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>Inventory Name</th>
+                        <th>Quantity</th>
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of oldInventory; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ data.name}}</td>
+                        <td>
+                            {{ data.quantity}}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

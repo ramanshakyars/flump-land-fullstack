@@ -1,0 +1,72 @@
+<div class="container-fluid">
+    <div class="row mt-4">
+        <div class="col-12">
+            <h2 class="text-center">Children Registration Form</h2>
+        </div>
+    </div>
+    <div class="row" [formGroup]="childrenRegistrationForm">
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Full Name</mat-label>
+                <input type="text" matInput placeholder="Ram Kumar" formControlName="fullName">
+
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Date Of Birth</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [max]="maxDate" readonly>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Father Name</mat-label>
+                <input type="text" matInput placeholder="Mr. Ram Kumar" formControlName="fatherName">
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Mother Name</mat-label>
+                <input type="text" matInput placeholder="Mrs. Ram Kumar" formControlName="mothersName">
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Contact Number</mat-label>
+                <input type="number" matInput placeholder="0123456789" formControlName="parentContactNo">
+            </mat-form-field>
+            <val-errors controlName="parentContactNo" class="custom-error">
+                <ng-template valError="required" let-label>
+                  Contact number is required.
+                </ng-template>
+                <ng-template valError="pattern" let-label>
+                  Contact number should be exactly 10 digits.
+                </ng-template>
+              </val-errors>
+        </div>
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Date Of Joining</mat-label>
+                <input matInput [matDatepicker]="picker2" formControlName="dateOfJoining" readonly>
+                <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="col-12">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Address</mat-label>
+                <input type="text" matInput placeholder="Noida" formControlName="address">
+            </mat-form-field>
+        </div>
+        <div class="col-6 text-center ">
+            <button mat-raised-button class="mb-2" (click)="closeDialog()">Cancel</button>
+        </div>
+        <div class="col-6 text-center ">
+            <button mat-raised-button class="mb-2"    [disabled]="childrenRegistrationForm.invalid" (click)="submitForm()">{{ data.action === "add" ? "Save" : "Update"
+                }}</button>
+        </div>
+    </div>
+
+</div>

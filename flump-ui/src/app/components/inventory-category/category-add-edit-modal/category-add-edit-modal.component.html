@@ -1,0 +1,24 @@
+<div class="container">
+    <h2 mat-dialog-title>{{dialogData.action === 'edit' ? 'Edit' : 'Add'}} Inventory Category</h2>
+    <form [formGroup]="categoryForm">
+        <mat-dialog-content>
+            <div class="row">
+                <div class="col-sm-12">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Category Name</mat-label>
+                        <input matInput formControlName="categoryName">
+                    </mat-form-field>
+                    <val-errors controlName="categoryName" class="custom-error">
+                        <ng-template valError="required" let-label>Category Name is
+                            required</ng-template>
+                    </val-errors>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button mat-button (click)="closeDialog()">Cancel</button>
+            <button mat-button type="submit" (click)="onCategoryFormSubmit()">{{dialogData.action === 'edit' ? 'Update'
+                : 'Save'}}</button>
+        </mat-dialog-actions>
+    </form>
+</div>

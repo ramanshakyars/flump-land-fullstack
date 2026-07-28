@@ -1,0 +1,99 @@
+<div class="container">
+    <h2 mat-dialog-title>
+      {{ dialogData.action === 'edit' ? 'Edit' : 'Add' }}  offer details
+    </h2>
+    <form [formGroup]="offerForm">
+      <mat-dialog-content>
+        <!-- Offer Name -->
+        <div>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Offer Name</mat-label>
+            <input matInput formControlName="offerName" />
+          </mat-form-field>
+          <val-errors controlName="offerName" class="custom-error">
+            <ng-template valError="required" let-label>
+              Offer Name is required
+            </ng-template>
+          </val-errors>
+        </div>
+  
+        <!-- Percentage -->
+        <div>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Percentage</mat-label>
+            <input matInput type="number" formControlName="percentage" />
+          </mat-form-field>
+          <val-errors controlName="percentage" class="custom-error">
+            <ng-template valError="required" let-label>
+              Percentage is required
+            </ng-template>
+            <ng-template valError="pattern" let-label>
+              Percentage should be 1 to 100
+            </ng-template>
+            <ng-template valError="min" let-label>
+              Percentage should be 1 to 100
+            </ng-template>
+            <ng-template valError="max" let-label>
+              Percentage should be 1 to 100
+            </ng-template>
+          </val-errors>
+        </div>
+        
+  
+        <!-- Start Date -->
+        <div>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="pickerStart" formControlName="start" readonly/>
+            <mat-datepicker-toggle matIconSuffix [for]="pickerStart">
+            </mat-datepicker-toggle>
+            <mat-datepicker #pickerStart></mat-datepicker>
+          </mat-form-field>
+          <val-errors controlName="start" class="custom-error">
+            <ng-template valError="required" let-label>
+              Start Date is required
+            </ng-template>
+          </val-errors>
+        </div>
+  
+        <!-- End Date -->
+        <div>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="pickerEnd" formControlName="end" readonly/>
+            <mat-datepicker-toggle matIconSuffix [for]="pickerEnd">
+            </mat-datepicker-toggle>
+            <mat-datepicker #pickerEnd></mat-datepicker>
+          </mat-form-field>
+          <val-errors controlName="end" class="custom-error">
+            <ng-template valError="required" let-label>
+              End Date is required
+            </ng-template>
+          </val-errors>
+        </div>
+
+        <!-- Active -->
+        <div>
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Active</mat-label>
+                <mat-select formControlName="isActive">
+                  <mat-option [value]="true">YES</mat-option>
+                  <mat-option [value]="false">NO</mat-option>
+                </mat-select>
+              </mat-form-field>              
+          <val-errors controlName="isActive" class="custom-error">
+            <ng-template valError="required" let-label>
+              Required
+            </ng-template>
+          </val-errors>
+        </div>
+      </mat-dialog-content>
+      <mat-dialog-actions>
+        <button mat-button (click)="closeDialog()">Cancel</button>
+        <button mat-button type="submit" (click)="OnOfferSubmit()">
+          {{ dialogData.action === 'edit' ? 'Update' : 'Create' }}
+        </button>
+      </mat-dialog-actions>
+    </form>
+  </div>
+  

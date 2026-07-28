@@ -1,0 +1,143 @@
+<div class="container-fluid">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <h1>Children Information</h1>
+        </div>
+        <div class="col-sm-6 d-flex gap-2">
+            <!-- date filter -->
+            <mat-form-field class="flex-grow-1" appearance="outline">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Start date" readonly>
+                  <input matEndDate formControlName="end" placeholder="End date" readonly>
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <!-- search text -->
+            <mat-form-field class="flex-grow-1" appearance="outline">
+                <mat-label>Seach</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Name,No,father name" #input>
+            </mat-form-field>
+
+            <div class="d-flex justify-content-end">
+                <button class="round btn" (click)="downloadExcel()"><mat-icon> vertical_align_bottom</mat-icon></button>
+            </div>
+
+           <div class="d-flex justify-content-end">
+            <button (click)="openDialog('add', null)" class="round btn">+</button>
+           </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="mat-elevation-z8 table-container">
+                <table mat-table [dataSource]="dataSource" matSort>
+
+
+                    <ng-container matColumnDef="fullName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Full Name </th>
+                        <td mat-cell *matCellDef="let row"> {{row.fullName}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dateOfBirth">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date of Birth</th>
+                        <td mat-cell *matCellDef="let row"> {{row.dateOfBirth | date: 'dd/MM/yyyy'}} </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="fatherName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Father's Name </th>
+                        <td mat-cell *matCellDef="let row"> {{row.fatherName}} </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="mothersName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Mother's Name </th>
+                        <td mat-cell *matCellDef="let row"> {{row.mothersName}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="parentContactNo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Contact </th>
+                        <td mat-cell *matCellDef="let row"> {{row.parentContactNo}} </td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="checkIn">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Check In</th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-raised-button (click)="checkIn(row)"
+                                [disabled]="!(!row.checkedIn && row.previousBillPaid)">Check
+                                IN</button>
+
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addItems">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Add Items </th>
+                        <td mat-cell *matCellDef="let row"> <button mat-raised-button (click)="openItemsDialog(row)"
+                                [disabled]="!(row.checkedIn)">Add
+                                items</button> </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="checkOut">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Check Out </th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-raised-button (click)="checkOut(row)"
+                                [disabled]="!(row.activityAdded && row.checkedIn)">Check
+                                Out</button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="billing">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing </th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-raised-button [disabled]="!(row.activityAdded && !row.checkedIn)"
+                                (click)="navigateToCreateBill(row)">Billing
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+                        <td mat-cell *matCellDef="let row">
+                            <button mat-button [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+
+                                <button mat-menu-item color="accent">
+                                    <mat-icon>visibility</mat-icon>View Info
+                                </button>
+                                <button mat-menu-item color="accent" (click)="openDialog('edit', row)">
+                                    <mat-icon>edit</mat-icon>Edit Info
+                                </button>
+                                <button mat-menu-item color="accent" (click)="navigateToViewHistory(row)">
+                                    <mat-icon>history</mat-icon>View History
+                                </button>
+
+                                <button mat-menu-item color="warn">
+                                    <mat-icon>delete</mat-icon>Delete Patient
+                                </button>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <!-- Row shown when there is no matching data. -->
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+        <div class="col-12">
+            <mat-paginator [length]="totalRecords" [pageSizeOptions]="pageSizes" showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
+        </div>        
+    </div>
+</div>

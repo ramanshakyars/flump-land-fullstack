@@ -1,0 +1,11 @@
+server:
+  port: 9091
+
+spring:
+  application:
+    name: FlumpLandPlayZoneApplication
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/flumpland_db
+      database: flumpland_db

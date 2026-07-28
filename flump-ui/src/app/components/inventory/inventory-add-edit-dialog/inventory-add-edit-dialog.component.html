@@ -1,0 +1,58 @@
+<div class="container">
+    <h2 mat-dialog-title>{{dialogData.action === 'edit' ? 'Edit' : 'Add'}} Inventory</h2>
+    <form [formGroup]="inventoryForm">
+        <mat-dialog-content>
+            <div class="row">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="name">
+                    </mat-form-field>
+                    <val-errors controlName="name" class="custom-error">
+                        <ng-template valError="required" let-label>Name is
+                            required</ng-template>
+                    </val-errors>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Price</mat-label>
+                        <input type="number" matInput formControlName="price">
+                    </mat-form-field>
+                    <val-errors controlName="price" class="custom-error">
+                        <ng-template valError="required" let-label>Price is
+                            required</ng-template>
+                    </val-errors>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Total Quantity</mat-label>
+                        <input type="number" matInput formControlName="totalQuantity">
+                    </mat-form-field>
+                    <val-errors controlName="totalQuantity" class="custom-error">
+                        <ng-template valError="required" let-label>Total Quantity is
+                            required</ng-template>
+                    </val-errors>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" >
+                        <mat-label>Inventory Type</mat-label>
+                        <mat-select matNativeControl formControlName="inventoryType">
+                            <mat-option *ngFor="let category of categories" [value]="category.categoryName">
+                                {{category.categoryName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <val-errors controlName="inventoryType" class="custom-error">
+                        <ng-template valError="required" let-label>Inventory Type is
+                            required</ng-template>
+                    </val-errors>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button mat-button (click)="closeDialog()">Cancel</button>
+            <button mat-button type="submit" (click)="onInventoryFormSubmit()">{{dialogData.action === 'edit' ? 'Update'
+                : 'Save'}}</button>
+        </mat-dialog-actions>
+    </form>
+</div>
