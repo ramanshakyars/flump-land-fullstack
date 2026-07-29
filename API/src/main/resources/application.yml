@@ -7,5 +7,6 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/flumpland_db
+      # uri: mongodb://localhost:27017/flumpland_db
+      uri: mongodb://host.docker.internal:27017/flumpland_db
       database: flumpland_db
