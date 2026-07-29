@@ -16,38 +16,42 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                sh 'chmod +x mvnw'
-                sh './mvnw clean package -DskipTests'
+                dir('API') {
+                    sh 'chmod +x mvnw'
+                    sh './mvnw clean package -DskipTests'
+                }
             }
         }
 
         stage('Verify Build') {
             steps {
-                sh 'ls -lh target'
+                dir('API') {
+                    sh 'ls -lh target'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME}:latest .'
+                dir('API') {
+                    sh 'docker build -t ${IMAGE_NAME}:latest .'
+                }
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                sh '''
-                    docker rm -f ${CONTAINER_NAME} || true
-                '''
+                sh 'docker rm -f ${CONTAINER_NAME} || true'
             }
         }
 
         stage('Run Container') {
             steps {
                 sh '''
-                    docker run -d \
-                    --name ${CONTAINER_NAME} \
-                    -p 8081:8080 \
-                    ${IMAGE_NAME}:latest
+                docker run -d \
+                --name ${CONTAINER_NAME} \
+                -p 8081:8080 \
+                ${IMAGE_NAME}:latest
                 '''
             }
         }
