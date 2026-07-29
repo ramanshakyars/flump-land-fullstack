@@ -9,6 +9,6 @@ services:
     container_name: flumpland-app-container
 
     ports:
-      - "8081:8080"
+      - "9091:9091"
 
     restart: unless-stopped
