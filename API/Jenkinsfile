@@ -80,9 +80,8 @@ pipeline {
     agent any
 
     environment {
-
         IMAGE_NAME = "flumpland-app"
-
+        NAMESPACE = "flumpland"
     }
 
     stages {
@@ -93,7 +92,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Application') {
             steps {
                 dir('API') {
                     sh 'chmod +x mvnw'
@@ -102,54 +101,61 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-
+        stage('Build Docker Image') {
             steps {
-
                 dir('API') {
-
-                    sh 'docker build -t ${IMAGE_NAME}:latest .'
-
+                    sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
-
             }
-
         }
 
-        stage('Deploy Kubernetes') {
-
+        stage('Deploy to Kubernetes') {
             steps {
-
                 dir('API') {
-
                     sh '''
-                    kubectl apply -f k8s/namespace.yaml
+                        kubectl apply -f k8s/namespace.yaml
+                        kubectl apply -f k8s/deployment.yaml
+                        kubectl apply -f k8s/service.yaml
 
-                    kubectl apply -f k8s/deployment.yaml
-
-                    kubectl apply -f k8s/service.yaml
+                        kubectl rollout status deployment/flumpland-app -n flumpland
                     '''
-
                 }
-
             }
-
         }
 
-        stage('Verify') {
-
+        stage('Verify Deployment') {
             steps {
+                sh '''
+                    echo "===== Nodes ====="
+                    kubectl get nodes
 
-                sh 'kubectl get pods -n flumpland'
+                    echo "===== Pods ====="
+                    kubectl get pods -n flumpland
 
-                sh 'kubectl get deployment -n flumpland'
+                    echo "===== Deployments ====="
+                    kubectl get deployments -n flumpland
 
-                sh 'kubectl get svc -n flumpland'
-
+                    echo "===== Services ====="
+                    kubectl get svc -n flumpland
+                '''
             }
-
         }
-
     }
 
+    post {
+
+        success {
+            echo "Deployment completed successfully."
+        }
+
+        failure {
+            echo "Deployment failed."
+
+            sh '''
+                kubectl get events -n flumpland --sort-by=.lastTimestamp || true
+                kubectl describe deployment flumpland-app -n flumpland || true
+                kubectl get pods -n flumpland || true
+            '''
+        }
+    }
 }
