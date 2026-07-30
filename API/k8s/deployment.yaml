@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: flumpland-app
+  namespace: flumpland
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: flumpland-app
+
+  template:
+    metadata:
+      labels:
+        app: flumpland-app
+
+    spec:
+      containers:
+
+      - name: flumpland-app
+
+        image: flumpland-app:latest
+
+        imagePullPolicy: Never
+
+        ports:
+
+        - containerPort: 9091

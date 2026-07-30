@@ -1,9 +1,88 @@
+// pipeline {
+//     agent any
+
+//     environment {
+//         IMAGE_NAME = "flumpland-app"
+//         CONTAINER_NAME = "flumpland-app-container"
+//     }
+
+//     stages {
+
+//         stage('Checkout') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+
+//         stage('Build Application') {
+//             steps {
+//                 dir('API') {
+//                     sh 'chmod +x mvnw'
+//                     sh './mvnw clean package -DskipTests'
+//                 }
+//             }
+//         }
+
+//         stage('Verify Build') {
+//             steps {
+//                 dir('API') {
+//                     sh 'ls -lh target'
+//                 }
+//             }
+//         }
+
+//         stage('Build Docker Image') {
+//             steps {
+//                 dir('API') {
+//                     sh 'docker build -t ${IMAGE_NAME}:latest .'
+//                 }
+//             }
+//         }
+
+//         stage('Stop Old Container') {
+//             steps {
+//                 sh 'docker rm -f ${CONTAINER_NAME} || true'
+//             }
+//         }
+
+//         stage('Run Container') {
+//             steps {
+//                 sh '''
+//                 docker run -d \
+//                 --name ${CONTAINER_NAME} \
+//                 -p 9091:9091 \
+//                 ${IMAGE_NAME}:latest
+//                 '''
+//             }
+//         }
+
+//         stage('Health Check') {
+//             steps {
+//                 sh 'sleep 20'
+//                 sh 'docker ps'
+//             }
+//         }
+//     }
+
+//     post {
+//         success {
+//             echo 'Application deployed successfully.'
+//         }
+
+//         failure {
+//             echo 'Deployment failed.'
+//         }
+//     }
+// }
+
 pipeline {
+
     agent any
 
     environment {
+
         IMAGE_NAME = "flumpland-app"
-        CONTAINER_NAME = "flumpland-app-container"
+
     }
 
     stages {
@@ -14,7 +93,7 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
+        stage('Build') {
             steps {
                 dir('API') {
                     sh 'chmod +x mvnw'
@@ -23,54 +102,54 @@ pipeline {
             }
         }
 
-        stage('Verify Build') {
-            steps {
-                dir('API') {
-                    sh 'ls -lh target'
-                }
-            }
-        }
+        stage('Docker Build') {
 
-        stage('Build Docker Image') {
             steps {
+
                 dir('API') {
+
                     sh 'docker build -t ${IMAGE_NAME}:latest .'
+
                 }
+
             }
+
         }
 
-        stage('Stop Old Container') {
+        stage('Deploy Kubernetes') {
+
             steps {
-                sh 'docker rm -f ${CONTAINER_NAME} || true'
+
+                dir('API') {
+
+                    sh '''
+                    kubectl apply -f k8s/namespace.yaml
+
+                    kubectl apply -f k8s/deployment.yaml
+
+                    kubectl apply -f k8s/service.yaml
+                    '''
+
+                }
+
             }
+
         }
 
-        stage('Run Container') {
+        stage('Verify') {
+
             steps {
-                sh '''
-                docker run -d \
-                --name ${CONTAINER_NAME} \
-                -p 9091:9091 \
-                ${IMAGE_NAME}:latest
-                '''
+
+                sh 'kubectl get pods -n flumpland'
+
+                sh 'kubectl get deployment -n flumpland'
+
+                sh 'kubectl get svc -n flumpland'
+
             }
+
         }
 
-        stage('Health Check') {
-            steps {
-                sh 'sleep 20'
-                sh 'docker ps'
-            }
-        }
     }
 
-    post {
-        success {
-            echo 'Application deployed successfully.'
-        }
-
-        failure {
-            echo 'Deployment failed.'
-        }
-    }
 }
